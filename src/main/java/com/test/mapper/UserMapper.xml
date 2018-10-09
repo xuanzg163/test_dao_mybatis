@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+1.命名空间配置全局唯一包名+文件名
+2.配置Mapped Statement
+3. statement 配置
+id 值声明statement 编号同一命名空间(同一文件)下不可重复
+parameterType 输入参数即占位符的数据类型类型可以是基本数据类型,字符
+串,java bean ,map,list 等
+resultType 输出结果类型可以是基本数据类型,字符串,java bean,map 等
+statement 描述即待执行的sql
+#{id} 占位符变量名为id/value 均可${value} 变量名必须为value 字符
+串拼接形式无法避免sql 注入
+-->
+<mapper namespace="com.test.mapper.UserMapper">
+    <select id="queryUserById" parameterType="int"
+            resultType="user">
+          select id,user_name as userName,user_pwd as userPwd from user where id=#{id}
+    </select>
+
+    <!--添加不返回id-->
+    <insert id="addUser" parameterType="user">
+INSERT INTO user (user_name, user_pwd, real_name, nation, card_id)
+VALUES ( #{userName}, #{userPwd}, #{realName}, #{nation}, #{cardId});
+    </insert>
+</mapper>
