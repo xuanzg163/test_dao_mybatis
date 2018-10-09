@@ -25,4 +25,62 @@ statement 描述即待执行的sql
 INSERT INTO user (user_name, user_pwd, real_name, nation, card_id)
 VALUES ( #{userName}, #{userPwd}, #{realName}, #{nation}, #{cardId});
     </insert>
+
+    <!--添加返回id-->
+    <insert id="addUserHasKey" parameterType="user">
+        <selectKey keyProperty="id" order="AFTER" resultType="int">
+            select LAST_INSERT_ID() as id
+        </selectKey>
+        INSERT INTO user (user_name, user_pwd, real_name, nation, card_id)
+        VALUES ( #{userName}, #{userPwd}, #{realName}, #{nation}, #{cardId});
+    </insert>
+
+    <!--添加返回id(通用版)-->
+    <insert id="addUserHasKeyGeneral" parameterType="user" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO user (user_name, user_pwd, real_name, nation, card_id)
+        VALUES ( #{userName}, #{userPwd}, #{realName}, #{nation}, #{cardId});
+    </insert>
+
+    <!--批量添加用户-->
+    <insert id="addUserBatch" parameterType="list">
+        INSERT INTO user (user_name, user_pwd, real_name, nation, card_id) 
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+             ( #{item.userName}, #{item.userPwd}, #{item.realName}, #{item.nation}, #{item.cardId})
+        </foreach>
+    </insert>
+
+    <!--更新用户信息-->
+    <update id="updateUser" parameterType="user">
+      UPDATE user SET
+      user_name = #{userName}, user_pwd = #{userPwd}, real_name = #{realName}
+       WHERE id = #{id}
+    </update>
+
+    <!--批量更新用户数据-->
+    <update id="updateUserBatch" >
+      UPDATE user SET user_pwd = '123456'
+       WHERE
+        id  in (
+         <foreach collection="array" item="item" separator=",">
+           #{item}
+       </foreach>
+       )
+    </update>
+
+    <!--删除-->
+    <delete id="deleteUser" parameterType="int">
+        delete from user where id=#{id}
+    </delete>
+
+    <!--批量删除-->
+    <delete id="deleteUserBatch" parameterType="list">
+        delete from user where id
+        in (
+        <foreach collection="list" item="item" separator=",">
+            #{item}
+        </foreach>
+        )
+    </delete>
+
 </mapper>
